@@ -1,0 +1,12 @@
+*.pyc
+.installed.cfg
+app.py
+bin/
+bootstrap.py
+buildout.cfg
+develop-eggs/
+downloads/
+eggs/
+parts/
+koe/
+src/gaebuild.egg-info/
