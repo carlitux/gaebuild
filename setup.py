@@ -17,7 +17,6 @@ setup(name='gaebuild',
       long_description='\n\n'.join([readme, changes]),
       classifiers=[
         'Framework :: Buildout',
-        'Framework :: Google App Engine',
         'Topic :: Software Development :: Build Tools',
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: BSD License',
