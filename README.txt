@@ -70,9 +70,13 @@ download-cache
   installation. The recipe will use this folder as a cache for a
   downloaded version of Django.
 
-libs-dir
-  All paths specified here will be used to extend the default Python
-  path for the `bin/*` scripts.
+libs-path
+  Path specified here will be used to install python projects
+  
+script-dir
+  Paths specified here will be used to extend the default Python
+  path for the `bin/*` scripts. default 'bin' some common scripts
+  will be wsdl2py used for webservices and ZSI
 
 find-links
   used to install apps inside the project
@@ -100,6 +104,7 @@ Notes.-
   edit webservices.py only generated once.
 * If not edit app.py first extending pythonpath if you change this variables: local-apps, extarnal-apps
   libs-dir
+* If some app or project has error on its setup.py file the process is terminated
 
 
 Another example
@@ -108,7 +113,7 @@ Another example
 The next example shows you how to use some more of the options::
 
   [buildout]
-  parts = django extras
+  parts = gae extras
   eggs =
     hashlib
 
@@ -118,55 +123,13 @@ The next example shows you how to use some more of the options::
     http://django-command-extensions.googlecode.com/svn/trunk/ django-command-extensions
     http://django-mptt.googlecode.com/svn/trunk/ django-mptt
 
-  [django]
-  recipe = djbuild
-  version = trunk
+  [gae]
+  recipe = gaebuild
   settings = development
   project = exampleproject
-  wsgi = true
   eggs =
     ${buildout:eggs}
-  test =
-    someapp
-    anotherapp
 
-Example using .pth files
-========================
-
-Pinax uses a .pth file to add a bunch of libraries to its path; we can
-specify it's directory to get the libraries it specified added to our
-path::
-
-  [buildout]
-  parts	= PIL
-	  svncode
-	  myproject
-
-  [PIL]
-  recipe	= zc.recipe.egg:custom
-  egg		= PIL
-  find-links	= http://dist.repoze.org/
-
-  [svncode]
-  recipe	= iw.recipe.subversion
-  urls		= http://svn.pinaxproject.com/pinax/tags/0.5.1rc1	pinax
-
-  [myproject]
-  recipe	= djbuild
-  version	= 1.0.2
-  eggs		= PIL
-  project	= myproject
-  settings	= settings
-  extra-paths	= ${buildout:directory}/myproject/apps
-		  ${svncode:location}/pinax/apps/external_apps
-		  ${svncode:location}/pinax/apps/local_apps
-  pth-files	= ${svncode:location}/pinax/libs/external_libs
-  wsgi		= true
-
-Above, we use stock Pinax for pth-files and extra-paths paths for
-apps, and our own project for the path that will be found first in the
-list.  Note that we expect our project to be checked out (e.g., by
-svn:external) directly under this directory in to 'myproject'.
 
 Example with a different Python version
 =======================================
@@ -181,25 +144,6 @@ generated script use something like::
   executable = /some/special/python
 
   [myproject]
-  recipe	= djbuild
-  version	= 1.0.2
+  recipe	= gaebuild
   project	= myproject
   python	= special-python
-
-
-Example configuration for mod_wsgi
-==================================
-
-If you want to deploy a project using mod_wsgi you could use this
-example as a starting point::
-
-  <Directory /path/to/buildout>
-         Order deny,allow
-         Allow from all
-  </Directory>
-  <VirtualHost 1.2.3.4:80>
-         ServerName      my.rocking.server
-         CustomLog       /var/log/apache2/my.rocking.server/access.log combined
-         ErrorLog        /var/log/apache2/my.rocking.server/error.log
-         WSGIScriptAlias / /path/to/buildout/bin/django.wsgi
-  </VirtualHost>

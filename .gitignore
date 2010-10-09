@@ -2,8 +2,6 @@
 .installed.cfg
 app.py
 bin/
-bootstrap.py
-buildout.cfg
 develop-eggs/
 downloads/
 eggs/

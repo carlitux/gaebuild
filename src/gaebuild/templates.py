@@ -1,5 +1,4 @@
-production_settings = '''
-DEBUG = False
+production_settings = '''DEBUG = False
 SITE_TITLE = 'Site title'
 TEMPLATE_PATH = 'templates'
   
@@ -10,8 +9,7 @@ INSTALLED_APPS = [
 ]
 '''
 
-development_settings = '''
-DEBUG = True
+development_settings = '''DEBUG = True
 SITE_TITLE = 'Site title'
 TEMPLATE_PATH = 'templates'
   
@@ -24,8 +22,7 @@ INSTALLED_APPS = [
 
 configs = {
     'turboengine': {
-        'app_py': '''
-#########################################################
+        'app_py': '''#########################################################
 # Extending python path, file generated not edit
 #########################################################
   
@@ -72,8 +69,7 @@ def main():
 if __name__ == "__main__":
     main()
         ''',
-        'webservices_py':'''
-#########################################################
+        'webservices_py':'''#########################################################
 # Extending python path, file generated
 #########################################################
   
@@ -128,8 +124,7 @@ if __name__ == '__main__':
     },
     
     'gae':{
-        'app_py': '''        
-#########################################################
+        'app_py': '''#########################################################
 # Extending python path, file generated
 #########################################################
   
@@ -175,8 +170,7 @@ if __name__ == "__main__":
     },
     
     'common':{
-        'app_yaml': '''
-application: YOUR_APP_NAME
+        'app_yaml': '''application: YOUR_APP_NAME
 version: 0
 runtime: python
 api_version: 1
@@ -210,8 +204,7 @@ skip_files:
 - ^(.*/)?.old\.*
 - ^(.*/)?.docs\.*        
         ''',
-        'index_yaml': '''
-#indexes:
+        'index_yaml': '''#indexes:
 
 #- kind: Cat
 #  ancestor: no
@@ -220,8 +213,7 @@ skip_files:
 #  - name: age
 #    direction: desc        
         ''',
-        'cron_yaml': '''
-#cron:
+        'cron_yaml': '''#cron:
 #- description: daily summary job
 #  url: /tasks/summary
 #  schedule: every 24 hours
@@ -230,8 +222,7 @@ skip_files:
 #  schedule: every monday 09:00
 #  timezone: Australia/NSW
         ''',
-        'queue_yaml': '''
-#queue:
+        'queue_yaml': '''#queue:
 #- name: default
 #  rate: 1/s
 #- name: mail-queue
@@ -240,8 +231,7 @@ skip_files:
 #- name: background-processing
 #  rate: 5/s       
         ''',
-        'dos_yaml': '''
-#blacklist:
+        'dos_yaml': '''#blacklist:
 #- subnet: 1.2.3.4
 #  description: a single IP address
 #- subnet: 1.2.3.4/24

@@ -18,17 +18,12 @@ class GAEBuild(object):
         options.setdefault('external-apps', 'apps')
         options.setdefault('local-apps', 'company')
         options.setdefault('settings', 'development')
-        options.setdefault('libs-dir', 'lib')
+        options.setdefault('libs-path', 'lib')
+        options.setdefault('script-dir', 'bin')
         options.setdefault('turboengine', '')
         options.setdefault('webservices', 'false')
         options.setdefault('zipped', 'false')
 
-        # Set this so the rest of the recipe can expect the values to be
-        # there. We need to make sure that both pythonpath and extra-paths are
-        # set for BBB.
-        if 'libs-dir' in options:
-            options['pythonpath'] = options['libs-dir']            
-            
         # Usefull when using archived versions
         buildout['buildout'].setdefault(
             'download-cache',
@@ -53,7 +48,7 @@ class GAEBuild(object):
         self.__installer.install_recipe(location)
         self.__installer.install_project(project_dir, self.options['project'])
         
-        script_paths = self.__installer.install_scripts(extra_path, ws)
+        script_paths = self.__installer.install_scripts(project_dir, extra_path, ws)
         
         print '\n------------------ Installing GAEBuild ------------------\n'
 

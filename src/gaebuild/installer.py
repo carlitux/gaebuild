@@ -27,7 +27,7 @@ class Installer:
                        local_apps_dir, external_apps_dir]
 
         pythonpath = [p.replace('/', os.path.sep) for p in
-                      self.options['libs-dir'].splitlines() if p.strip()]
+                      self.options['libs-path'].splitlines() if p.strip()]
 
         extra_paths.extend(pythonpath)
         
@@ -46,12 +46,13 @@ class Installer:
         f.write(template % options)
         f.close()
     
-    def make_scripts(self, extra_paths, ws):
+    def make_scripts(self, location, extra_paths, ws):
         scripts = []
-        if self.options['turboengine'] == '':
-            self.create_file("app.py", templates.configs['turboengine']['app_py'], {'local': self.options['local-apps'],
-                                                                                    'external': self.options['external-apps'],
-                                                                                    'lib':self.options['libs-dir']})
+        if self.options['turboengine'] != '':
+            self.create_file(os.path.join(location, self.options['project'],'settings.py'), "from project import %(setting)s", {'setting': self.options['settings']})
+            self.create_file(os.path.join(location, self.options['project'],'app.py'), templates.configs['turboengine']['app_py'], {'local': self.options['local-apps'],
+                                                                                                                                    'external': self.options['external-apps'],
+                                                                                                                                    'lib': self.options['libs-path']})
         return scripts
     
     def create_project(self, project_dir, project):
@@ -75,16 +76,10 @@ class Installer:
         
         os.makedirs('static/css')
         os.makedirs('static/js')
-        os.makedirs('static/images')
+        os.makedirs('static/images')        
         
-        os.makedirs('project')
         os.makedirs('templates')
         os.makedirs('i18n')
-        
-        self.create_file('project/__init__.py', '', {})
-        
-        self.create_file("project/development.py", templates.development_settings, {})
-        self.create_file("project/production.py", templates.production_settings, {})
         
         self.create_file("app.yaml", templates.configs['common']['app_yaml'], {})
         self.create_file("index.yaml", templates.configs['common']['index_yaml'], {})
@@ -95,12 +90,19 @@ class Installer:
         if self.options['turboengine'] == '':
             self.create_file("app.py", templates.configs['gae']['app_py'], {'local': self.options['local-apps'],
                                                                             'external': self.options['external-apps'],
-                                                                            'lib':self.options['libs-dir']})
+                                                                            'lib':self.options['libs-path']})
         
-        if self.options['turboengine'] != '' and self.options['webservices'].lower() == 'true':
-            self.create_file("webservices.py", templates.configs['turboengine']['webservices_py'], {'local': self.options['local-apps'],
-                                                                                                    'external': self.options['external-apps'],
-                                                                                                    'lib':self.options['libs-dir']})
+        if self.options['turboengine'] != '':
+            os.makedirs('project')
+            self.create_file('project/__init__.py', '', {})
+        
+            self.create_file("project/development.py", templates.development_settings, {})
+            self.create_file("project/production.py", templates.production_settings, {})
+            
+            if self.options['webservices'].lower() == 'true':
+                self.create_file("webservices.py", templates.configs['turboengine']['webservices_py'], {'local': self.options['local-apps'],
+                                                                                                        'external': self.options['external-apps'],
+                                                                                                        'lib':self.options['libs-path']})
             
         # updating to original cwd
         os.chdir(old_cwd)
@@ -123,11 +125,17 @@ class Installer:
                     self.log.info("GAEBuild: moving external-apps dir from % to %s"%(old_config['external-apps'], self.options['external-apps']))
                     shutil.move(old_config['external-apps'], self.options['external-apps'])
                     
-            if 'libs-dir' in old_config and\
-               old_config['libs-dir'] != self.options['libs-dir']:
-                if os.path.exists(old_config['libs-dir']):
-                    self.log.info("GAEBuild: moving libs-dir dir from % to %s"%(old_config['libs-dir'], self.options['libs-dir']))
-                    shutil.move(old_config['libs-dir'], self.options['libs-dir'])
+            if 'libs-path' in old_config and\
+               old_config['libs-path'] != self.options['libs-path']:
+                if os.path.exists(old_config['libs-path']):
+                    self.log.info("GAEBuild: moving libs-path dir from % to %s"%(old_config['libs-path'], self.options['libs-path']))
+                    shutil.move(old_config['libs-path'], self.options['libs-path'])
+                    
+            if 'script-dir' in old_config and\
+               old_config['script-dir'] != self.options['script-dir']:
+                if os.path.exists(old_config['script-dir']):
+                    self.log.info("GAEBuild: moving script-dir dir from % to %s"%(old_config['script-dir'], self.options['script-dir']))
+                    shutil.move(old_config['script-dir'], self.options['script-dir'])
             
         if not os.path.exists(self.options['local-apps']):
             self.log.info("GAEBuild: creating local-apps dir %s"%(self.options['local-apps']))
@@ -137,12 +145,10 @@ class Installer:
             self.log.info("GAEBuild: creating external-apps dir %s"%(self.options['external-apps']))
             os.makedirs(self.options['external-apps'])
             
-        if not os.path.exists(self.options['libs-dir']):
-            self.log.info("GAEBuild: creating libs-dir dir %s"%(self.options['libs-dir']))
-            os.makedirs(self.options['libs-dir'])
-            
-        self.create_file("settings.py", "from project/%(setting).py", {'setting': self.options['settings']})
-            
+        if not os.path.exists(self.options['libs-path']):
+            self.log.info("GAEBuild: creating libs-path dir %s"%(self.options['libs-path']))
+            os.makedirs(self.options['libs-path'])
+        
         answer = raw_input("Do you want to install/update apps?(yes/no): ")
         
         if answer.lower() == 'yes':
@@ -182,12 +188,14 @@ class Installer:
                 self.log.info('No apps to install')
             else:
                 from setuptools.command.easy_install import main
-                install_dir = os.path.abspath(self.options['libs-dir'])
+                install_dir = os.path.abspath(self.options['libs-path'])
                 
-                args = ['-U', '-d', install_dir]
                 if self.options.get('zipped').lower() == 'true':
-                    args.append('-z')
-                    
+                    args = ['-U', '-z', '-d', install_dir]
+                else:
+                    args = ['-U', '-d', install_dir]
+                
+                args.extend(['-s', self.options['script-dir']])
                 args.extend(apps)
                 
                 links = self.options.get('find-links', '').split()
@@ -221,7 +229,7 @@ class Installer:
                                             self.options['recipe'],
                                             self.options)
         
-        development.install()
+        #development.install()
         del self.options['setup']
         
     def install_project(self, project_dir, project):
@@ -240,10 +248,10 @@ class Installer:
         
         os.chdir(old_cwd)
                 
-    def install_scripts(self, extra_path, ws):
+    def install_scripts(self, location, extra_path, ws):
         script_paths = []
 
         # Make the wsgi and fastcgi scripts if enabled
-        script_paths.extend(self.make_scripts(extra_path, ws))
+        script_paths.extend(self.make_scripts(location, extra_path, ws))
         
         return script_paths
