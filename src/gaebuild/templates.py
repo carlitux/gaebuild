@@ -244,7 +244,7 @@ skip_files:
     }    
 }
 
-base_html = ''' {% load i18n %}
+base_html = '''{% load i18n %}
 <!DOCTYPE html>
 <html>
 <head>
