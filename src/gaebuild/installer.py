@@ -41,9 +41,12 @@ class Installer:
             cmd, shell=True, stdout=output, **kwargs)
         return command.wait()
 
-    def create_file(self, file, template, options):
+    def create_file(self, file, template, options=None):
         f = open(file, 'w')
-        f.write(template % options)
+        if options is not None:
+            f.write(template % options)
+        else:
+            f.write(template)
         f.close()
     
     def make_scripts(self, location, extra_paths, ws):
@@ -80,6 +83,10 @@ class Installer:
         
         os.makedirs('templates')
         os.makedirs('i18n')
+        
+        self.create_file("templates/base.html", templates.base_html)
+        self.create_file("templates/404.html", templates.t_404_html)
+        self.create_file("templates/500.html", templates.t_500_html)
         
         self.create_file("app.yaml", templates.configs['common']['app_yaml'], {})
         self.create_file("index.yaml", templates.configs['common']['index_yaml'], {})
@@ -196,14 +203,13 @@ class Installer:
                     args = ['-U', '-d', install_dir]
                 
                 args.extend(['-s', self.options['script-dir']])
-                args.extend(apps)
-                
                 links = self.options.get('find-links', '').split()
                 
                 if len(links)>0:
                     links.insert(0, '-f')
                     args.extend(links)
                 
+                args.extend(apps)
                 previous_path = os.environ.get('PYTHONPATH', '')
                 if previous_path == '':
                     os.environ['PYTHONPATH'] = '%s'%(install_dir)

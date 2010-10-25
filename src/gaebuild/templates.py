@@ -243,3 +243,28 @@ skip_files:
         ''',
     }    
 }
+
+base_html = ''' {% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New HTML5 page</title>
+</head>
+<body>
+{% block container %}
+<!-- Add your content here-->
+{% endblock %}
+</body>
+</html>'''
+
+t_404_html = '''{% extends 'base.html' %}
+{% load i18n %}
+{% block container %}
+{% trans 'Page Not Found' %}
+{% endblock %}''' 
+
+t_500_html = '''{% extends 'base.html' %}
+{% load i18n %}
+{% block container %}
+{% trans 'Server error' %}
+{% endblock %}'''
