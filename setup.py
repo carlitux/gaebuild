@@ -2,19 +2,19 @@ import os
 
 from setuptools import setup, find_packages
 
-version = '0.1.3'
+version = '0.1.4'
 
 def read_file(name):
     return open(os.path.join(os.path.dirname(__file__),
                              name)).read()
 
 readme = read_file('README.txt')
-changes = read_file('CHANGES.txt')
+# changes = read_file('CHANGES.txt')
 
 setup(name='gaebuild',
       version=version,
       description="Buildout recipe for Google app engine",
-      long_description='\n\n'.join([readme, changes]),
+      long_description=readme,
       classifiers=[
         'Framework :: Buildout',
         'Topic :: Software Development :: Build Tools',
