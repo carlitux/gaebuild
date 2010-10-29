@@ -38,7 +38,6 @@ def update_path():
     lib_dir = os.path.join(base_dir,'%(lib)s/')
          
     if lib_dir not in sys.path:
-        sys.path.insert(0, lib_dir)
         import site
         site.addsitedir(lib_dir)
 
