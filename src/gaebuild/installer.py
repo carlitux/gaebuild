@@ -52,7 +52,7 @@ class Installer:
     def make_scripts(self, location, extra_paths, ws):
         scripts = []
         if self.options['turboengine'] != '':
-            self.create_file(os.path.join(location, self.options['project'],'settings.py'), "from project import %(setting)s", {'setting': self.options['settings']})
+            self.create_file(os.path.join(location, self.options['project'],'settings.py'), "from project.%(setting)s import *", {'setting': self.options['settings']})
             self.create_file(os.path.join(location, self.options['project'],'app.py'), templates.configs['turboengine']['app_py'], {'local': self.options['local-apps'],
                                                                                                                                     'external': self.options['external-apps'],
                                                                                                                                     'lib': self.options['libs-path']})
