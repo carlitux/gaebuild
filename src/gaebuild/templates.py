@@ -1,15 +1,26 @@
-production_settings = '''DEBUG = False
-SITE_TITLE = 'Site title'
-TEMPLATE_PATH = 'templates'
+production_settings = '''from local_settings import *
+
+DEBUG = False
   
 # url, callschuduler
-INSTALLED_APPS = [
+INSTALLED_APPS += [
     #('/', 'app'),
     #('/other/', 'app'),
 ]
 '''
 
-development_settings = '''DEBUG = True
+development_settings = '''from local_settings import *
+
+DEBUG = True
+  
+# url, callschuduler
+INSTALLED_APPS += [
+    #('/', 'app'),
+    #('/other/', 'app'),
+]
+'''
+
+local_settings = '''DEBUG = True
 SITE_TITLE = 'Site title'
 TEMPLATE_PATH = 'templates'
   

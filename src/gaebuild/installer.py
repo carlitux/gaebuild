@@ -105,6 +105,7 @@ class Installer:
         
             self.create_file("project/development.py", templates.development_settings, {})
             self.create_file("project/production.py", templates.production_settings, {})
+            self.create_file("local_settings.py", templates.local_settings, {})
             
             if self.options['webservices'].lower() == 'true':
                 self.create_file("webservices.py", templates.configs['turboengine']['webservices_py'], {'local': self.options['local-apps'],
