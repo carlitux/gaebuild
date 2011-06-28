@@ -8,3 +8,8 @@ eggs/
 parts/
 koe/
 src/gaebuild.egg-info/
+.ninjaproject/
+src/gaebuild/.ropeproject/
+gaebuild.nja
+dist/
+.ninjaproject/config.py

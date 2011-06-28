@@ -1,7 +1,7 @@
-production_settings = '''from local_settings import *
+production_settings = '''from settings import *
 
 DEBUG = False
-  
+
 # url, callschuduler
 INSTALLED_APPS += [
     #('/', 'app'),
@@ -9,23 +9,12 @@ INSTALLED_APPS += [
 ]
 '''
 
-development_settings = '''from local_settings import *
+development_settings = '''from settings import *
 
 DEBUG = True
-  
+
 # url, callschuduler
 INSTALLED_APPS += [
-    #('/', 'app'),
-    #('/other/', 'app'),
-]
-'''
-
-local_settings = '''DEBUG = True
-SITE_TITLE = 'Site title'
-TEMPLATE_PATH = 'templates'
-  
-# url, callschuduler
-INSTALLED_APPS = [
     #('/', 'app'),
     #('/other/', 'app'),
 ]
@@ -36,73 +25,75 @@ configs = {
         'app_py': '''#########################################################
 # Extending python path, file generated not edit
 #########################################################
-  
+
 def update_path():
     import os
     import sys
-     
+
     base_dir = os.path.abspath(os.path.dirname(__file__))
-     
+
     local_dir = os.path.join(base_dir,'%(local)s/')
     external_dir = os.path.join(base_dir,'%(external)s/')
 
     lib_dir = os.path.join(base_dir,'%(lib)s/')
-         
+
     if lib_dir not in sys.path:
         import site
         site.addsitedir(lib_dir)
 
-         
+
     if local_dir not in sys.path:
         sys.path.insert(0, local_dir)
-        
+
     if external_dir not in sys.path:
         sys.path.insert(0, external_dir)
-     
+
 update_path()
-  
+
 #########################################################
 # End extending python path, file generated not edit
 #########################################################
-  
+
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
-  
+
 from turboengine import urls
 from turboengine.conf import settings
-  
+
 application = webapp.WSGIApplication(urls.generate_urls(settings.INSTALLED_APPS), debug=settings.DEBUG)
-  
-def main():   
+
+def main():
     run_wsgi_app(application)
-  
+
 if __name__ == "__main__":
+    import os
+    os.environ['turboengine.settings'] = 'project.%(settings)s'
     main()
         ''',
         'webservices_py':'''#########################################################
 # Extending python path, file generated
 #########################################################
-  
+
 def update_path():
     import os
     import sys
-     
+
     base_dir = os.path.abspath(os.path.dirname(__file__))
-     
+
     local_dir = os.path.join(base_dir,'%(local)s/')
     external_dir = os.path.join(base_dir,'%(external)s/')
     lib_dir = os.path.join(base_dir,'%(lib)s/')
-         
+
     if lib_dir not in sys.path:
         import site
         site.addsitedir(lib_dir)
-         
+
     if local_dir not in sys.path:
         sys.path.insert(0, local_dir)
-        
+
     if external_dir not in sys.path:
         sys.path.insert(0, external_dir)
-     
+
 update_path()
 
 from turboengine.webservices.application import SOAPAplication
@@ -119,7 +110,7 @@ class wsEchoServer(EchoServer):
 
     def soap_Echo(self, ps, **kw):
         request, response = EchoServer.soap_Echo(self, ps, **kw)
-        return request, request 
+        return request, request
 
 def main():
     application = WSGIApplication()
@@ -131,31 +122,31 @@ if __name__ == '__main__':
     main()
         '''
     },
-    
+
     'gae':{
         'app_py': '''#########################################################
 # Extending python path, file generated
 #########################################################
-  
+
 def update_path():
     import os
     import sys
-     
+
     base_dir = os.path.abspath(os.path.dirname(__file__))
-     
+
     local_dir = os.path.join(base_dir,'%(local)s/')
     external_dir = os.path.join(base_dir,'%(external)s/')
     lib_dir = os.path.join(base_dir,'%(lib)s/')
-         
+
     if lib_dir not in sys.path:
         sys.path.insert(0, lib_dir)
-         
+
     if local_dir not in sys.path:
         sys.path.insert(0, local_dir)
-        
+
     if external_dir not in sys.path:
         sys.path.insert(0, external_dir)
-     
+
 update_path()
 
 from google.appengine.ext import webapp
@@ -177,29 +168,29 @@ if __name__ == "__main__":
     main()
         ''',
     },
-    
+
     'common':{
         'app_yaml': '''application: YOUR_APP_NAME
 version: 0
 runtime: python
 api_version: 1
-  
+
 handlers:
 # Statics files
 - url: /favicon.ico
   static_files: static/favicon.ico
   upload: static/favicon.ico
-   
+
 - url: /static
   static_dir: static
-   
+
 - url: /.*
   script: app.py
 
-# decomment this if you will use webservices 
+# decomment this if you will use webservices
 #- url: /webservices/.*
 #  script: app.py
-   
+
 skip_files:
 - ^(.*/)?app\.yaml
 - ^(.*/)?app\.yml
@@ -211,7 +202,7 @@ skip_files:
 - ^(.*/)?.*/RCS/.*
 - ^(.*/)?\..*
 - ^(.*/)?.old\.*
-- ^(.*/)?.docs\.*        
+- ^(.*/)?.docs\.*
         ''',
         'index_yaml': '''#indexes:
 
@@ -220,7 +211,7 @@ skip_files:
 #  properties:
 #  - name: name
 #  - name: age
-#    direction: desc        
+#    direction: desc
         ''',
         'cron_yaml': '''#cron:
 #- description: daily summary job
@@ -238,7 +229,7 @@ skip_files:
 #  rate: 2000/d
 #  bucket_size: 10
 #- name: background-processing
-#  rate: 5/s       
+#  rate: 5/s
         ''',
         'dos_yaml': '''#blacklist:
 #- subnet: 1.2.3.4
@@ -250,7 +241,7 @@ skip_files:
 #- subnet: abcd::123:4567/48
 #  description: an IPv6 subnet
         ''',
-    }    
+    }
 }
 
 base_html = '''{% load i18n %}
@@ -270,7 +261,7 @@ t_404_html = '''{% extends 'base.html' %}
 {% load i18n %}
 {% block container %}
 {% trans 'Page Not Found' %}
-{% endblock %}''' 
+{% endblock %}'''
 
 t_500_html = '''{% extends 'base.html' %}
 {% load i18n %}

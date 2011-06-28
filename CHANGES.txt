@@ -6,3 +6,4 @@ Changes
 28-Oct-2010: fixing templates for generating correct scripts
 28-Oct-2010: adding local_settings.py code less in setting options
 29-Oct-2010: fixing settings.py file to import correctly
+27-jun-2011: updating to new turboengine code
