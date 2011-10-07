@@ -7,3 +7,4 @@ Changes
 28-Oct-2010: adding local_settings.py code less in setting options
 29-Oct-2010: fixing settings.py file to import correctly
 27-jun-2011: updating to new turboengine code
+07-Oct-2011: new base.html template HTML5
